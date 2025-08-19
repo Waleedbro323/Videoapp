@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VideoApp Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Login / Signup</h2>
+  <input id="email" type="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
+  <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
+
+  <div id="afterLogin" style="display:none;">
+    <h3>Welcome!</h3>
+    <button onclick="window.location.href='user.html'">Go to User Page</button>
+    <button onclick="window.location.href='creator.html'">Go to Creator Page</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<script type="module">
+import { auth } from './firebase.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { logout } from './script.js';
+
+window.signup = () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  createUserWithEmailAndPassword(auth, email, pass).then(() => {
+    alert('Signup successful');
+  }).catch(e => alert(e.message));
+}
+
+window.login = () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  signInWithEmailAndPassword(auth, email, pass).then(() => {
+    document.getElementById('afterLogin').style.display = 'block';
+  }).catch(e => alert(e.message));
+}
+
+window.logout = logout;
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById('afterLogin').style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

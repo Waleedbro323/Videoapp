@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Video</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Upload Video</h2>
+  <input id="title" placeholder="Title"><br>
+  <input id="description" placeholder="Description"><br>
+  <input id="genre" placeholder="Genre"><br>
+  <input id="ageRating" placeholder="Age Rating"><br>
+  <input id="creatorId" placeholder="Creator ID"><br>
+  <input id="file" type="file"><br>
+  <button onclick="uploadVideo()">Upload</button>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script type="module">
+import { logout, toBase64 } from './script.js';
+
+window.logout = logout;
+
+async function uploadVideo() {
+  const title = document.getElementById('title').value;
+  const description = document.getElementById('description').value;
+  const genre = document.getElementById('genre').value;
+  const ageRating = document.getElementById('ageRating').value;
+  const creatorId = document.getElementById('creatorId').value;
+  const file = document.getElementById('file').files[0];
+  const fileName = file.name;
+  const fileContent = await toBase64(file);
+
+  const body = { title, description, genre, ageRating, creatorId, fileName, fileContent };
+
+  const url = "https://prod-157.westeurope.logic.azure.com:443/workflows/30fbd17b6c76484196a13f46992de304/triggers/manual/paths/invoke?api-version=2016-06-01";
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  if (res.ok) alert("Upload successful");
+  else alert("Upload failed");
+}
+
+window.uploadVideo = uploadVideo;
+</script>
+</body>
+</html>

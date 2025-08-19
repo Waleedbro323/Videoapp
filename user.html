@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Videos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Available Videos</h2>
+  <div id="videos"></div>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script type="module">
+import { logout } from './script.js';
+
+window.logout = logout;
+
+async function loadVideos() {
+  const url = "https://prod-149.westeurope.logic.azure.com:443/workflows/9de9e9f58be24a8d95323afc717f876b/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=_adTtI4Cz1YgkXQ5a1264t90IOFnTwkRwzv5Gumpf0Y";
+  const res = await fetch(url);
+  const data = await res.json();
+  const container = document.getElementById('videos');
+  container.innerHTML = "";
+  data.forEach(v => {
+    container.innerHTML += `
+      <div class="video-card">
+        <h3>${v.title}</h3>
+        <p>${v.description}</p>
+        <video width="100%" controls>
+          <source src="${v.videoUrl}" type="video/mp4">
+        </video>
+      </div>`;
+  });
+}
+loadVideos();
+</script>
+</body>
+</html>
